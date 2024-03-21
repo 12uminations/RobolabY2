@@ -1,5 +1,7 @@
 # RobolabY2
 Getting started
+
+
 1.Clone the repo:
 
 
@@ -46,7 +48,7 @@ And then run the launch file:
       ros2 launch articubot_one launch_sim.launch.py
 
   
-After that run the this file to control robot:
+After that run the this file to control robot's movement:
 
 
       ros2 run teleop_twist_keyboard teleop_twist_keyboard
