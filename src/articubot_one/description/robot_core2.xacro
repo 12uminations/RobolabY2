@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+    <xacro:include filename="inertial_macros.xacro" /> <!-- ดึงข้อมูลจากไฟล์ inertial_macros.xacro -->
+    <material name="white"> <!-- สร้าง material ของสีขาว  -->
+        <color rgba="1 1 1 1" /> <!-- กำหนดค่าสี  -->
+    </material>
+
+    <material name="orange"> <!-- สร้าง material ของสีส้ม  -->
+        <color rgba="1 0.3 0.1 1"/> <!-- กำหนดค่าสี  -->
+    </material>
+
+    <material name="blue"> <!-- สร้าง material ของสีฟ้า  -->
+        <color rgba="0.2 0.2 1 1"/> <!-- กำหนดค่าสี  -->
+    </material>
+
+    <material name="black"> <!-- สร้าง material ของสีดำ  -->
+        <color rgba="0 0 0 1"/> <!-- กำหนดค่าสี  -->
+    </material>
+
+    <material name="red"> <!-- สร้าง material ของสีแดง  -->
+        <color rgba="1 0 0 1"/> <!-- กำหนดค่าสี  -->
+    </material>
+
+    <!-- BASE LINK -->
+
+    <link name="base_link"> <!-- สร้าง link ชื่อ base_link  -->
+
+    </link>
+
+    <link name="chassis"> <!-- สร้าง link ชื่อ chassis  -->
+        <visual> 
+            <origin xyz="0.15 0 0.075" rpy="0 0 0"/> <!-- กำหนด visual ของ link chassis และตั้งค่าพิกัด (x, y, z) และแกนหมุน -->
+            <geometry>
+                <box size="0.3 0.3 0.15"/> <!-- สร้างกล่อง visual และกำหนดขนาด -->
+            </geometry>
+            <material name="white"/> <!-- ดึงข้อมูลค่าสีจาก material ชื่อ white -->
+        </visual>
+        <collision> 
+            <origin xyz="0.15 0 0.075" rpy="0 0 0"/> <!-- กำหนด collision ของ link chassis และตั้งค่าพิกัด (x, y, z) และแกนหมุน -->
+            <geometry>
+                <box size="0.3 0.3 0.15"/> <!-- สร้างกล่อง collision และกำหนดขนาด -->
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="0.5" x="0.3" y="0.3" z="0.15"> <!-- กำหนด inertial_box ค่ามวล และพิกัดของ inertial -->
+            <origin xyz="0.15 0 0.075" rpy="0 0 0"/> <!-- กำหนด inertial_box ของ link chassis และตั้งค่าพิกัด (x, y, z) และแกนหมุน -->
+        </xacro:inertial_box>
+    </link>
+    <gazebo reference="chassis">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+
+    <joint name="chassis_joint" type="fixed"> <!-- สร้าง joint ชื่อ chassis_joint แบบ fixed  -->
+        <parent link="base_link"/> <!-- สร้าง joint_link หลัก ชื่อ base_link -->
+        <child link="chassis"/> <!-- สร้าง joint_link ย่อย ชื่อ chassis -->
+        <origin xyz="-0.1 0 0"/> <!-- กำหนดตั้งค่าพิกัด (x, y, z) ของ joint -->
+    </joint>
+
+    <!-- BASE_FOOTPRINT LINK -->
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="base_footprint">
+    </link>
+
+    <!-- LEFT WHEEL -->
+
+    <joint name="left_wheel_joint" type="continuous"> <!-- สร้าง joint ชื่อ left_wheel_joint แบบ continuous  -->
+        <parent link="base_link"/> <!-- สร้าง joint_link หลัก ชื่อ base_link -->
+        <child link="left_wheel"/> <!-- สร้าง joint_link ย่อย ชื่อ left_wheel -->
+        <origin xyz="0 0.175 0" rpy="-${pi/2} 0 0"/> <!-- กำหนดตั้งค่าพิกัด (x, y, z) และการหันหน้าของ joint -->
+        <axis xyz="0 0 1"/> <!-- กำหนดแกนหมุนของ joint -->
+    </joint>
+    <link name="left_wheel"> <!-- สร้าง link ชื่อ left_wheel  -->
+        <visual>
+            <geometry>
+                <cylinder length="0.04" radius="0.05" /> <!-- สร้างทรงกระบอก visual และกำหนดความยาวและรัศมี -->
+            </geometry>
+            <material name="blue"/> <!-- ดึงข้อมูลค่าสีจาก material ชื่อ blue -->
+        </visual>
+        <collision> 
+            <geometry>
+                <cylinder length="0.04" radius="0.05" />  <!-- สร้างกล่อง collision และกำหนดขนาด -->
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="0.1" length="0.05" radius="0.05"> <!-- กำหนด inertial_cylinder ค่ามวล ความยาวและรัศมี -->
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- กำหนด inertial_cylinder ของ link left_wheel และตั้งค่าพิกัด (x, y, z) และแกนหมุน -->
+        </xacro:inertial_cylinder>
+    </link>
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Blue</material>
+        <!-- <mu1 value="0.001"/>
+        <mu2 value="0.001"/> -->
+    </gazebo>
+
+    <!-- RIGHT WHEEL -->
+
+    <joint name="right_wheel_joint" type="continuous"> <!-- สร้าง joint ชื่อ right_wheel_joint แบบ continuous  -->
+        <parent link="base_link"/> <!-- สร้าง joint_link หลัก ชื่อ base_link -->
+        <child link="right_wheel"/> <!-- สร้าง joint_link ย่อย ชื่อ right_wheel -->
+        <origin xyz="0 -0.175 0" rpy="${pi/2} 0 0"/> <!-- กำหนดตั้งค่าพิกัด (x, y, z) และการหันหน้าของ joint -->
+        <axis xyz="0 0 -1"/> <!-- กำหนดแกนหมุนของ joint -->
+    </joint>
+    <link name="right_wheel"> <!-- สร้าง link ชื่อ right_wheel  -->
+        <visual>
+            <geometry>
+                <cylinder length="0.04" radius="0.05" /> <!-- สร้างทรงกระบอก visual และกำหนดความยาวและรัศมี -->
+            </geometry>
+            <material name="blue"/> <!-- ดึงข้อมูลค่าสีจาก material ชื่อ blue -->
+        </visual>
+        <collision> 
+            <geometry>
+                <cylinder length="0.04" radius="0.05" />  <!-- สร้างกล่อง collision และกำหนดขนาด -->
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="0.1" length="0.05" radius="0.05"> <!-- กำหนด inertial_cylinder ค่ามวล ความยาวและรัศมี -->
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- กำหนด inertial_cylinder ของ link right_wheel และตั้งค่าพิกัด (x, y, z) และแกนหมุน -->
+        </xacro:inertial_cylinder>
+    </link>
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Blue</material>
+        <!-- <mu1 value="0.001"/>
+        <mu2 value="0.001"/> -->
+    </gazebo>
+
+    <!-- CASTER WHEEL -->
+
+    <joint name="caster_wheel_joint" type="fixed"> <!-- สร้าง joint ชื่อ caster_wheel_joint แบบ fixed  -->
+        <parent link="chassis"/> <!-- สร้าง joint_link หลัก ชื่อ chassis -->
+        <child link="caster_wheel"/> <!-- สร้าง joint_link ย่อย ชื่อ caster_wheel -->
+        <origin xyz="0.24 0 0" rpy="0 0 0"/> <!-- กำหนดตั้งค่าพิกัด (x, y, z) และการหันหน้าของ joint -->
+    </joint>
+
+    <link name="caster_wheel"> <!-- สร้าง link ชื่อ caster_wheel  -->
+        <visual>
+            <geometry>
+                <sphere radius="0.05" /> <!-- สร้างทรงกลม visual และกำหนดความยาวและรัศมี -->
+            </geometry>
+            <material name="black"/> <!-- ดึงข้อมูลค่าสีจาก material ชื่อ black -->
+        </visual>
+        <collision> 
+            <geometry>
+                <sphere radius="0.05" />
+            </geometry>
+        </collision>
+        <xacro:inertial_sphere mass="0.1" radius="0.05"> <!-- กำหนด inertial_sphere ค่ามวล และรัศมี -->
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- กำหนด inertial_sphere ของ link caster_wheel และตั้งค่าพิกัด (x, y, z) และแกนหมุน -->
+        </xacro:inertial_sphere>
+    </link>
+    <gazebo reference="caster_wheel">
+        <material>Gazebo/Black</material>
+        <mu1 value="0.1"/>
+        <mu2 value="0.1"/>
+    </gazebo>
+
+</robot>
